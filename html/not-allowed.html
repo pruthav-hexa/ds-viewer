@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Not Allowed</title>
+    <link rel="stylesheet" href="../styles/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<style>
+    body {
+        background-color: white;
+        min-height: unset;
+        display: block;
+    }
+</style>
+
+<body>
+    <div class="device__info">
+        <div class="device__infoDetails">
+            <p>Look like your system is not allowed to use this application.</p>
+            <p>Please contact management with bellow details.</p>
+
+            <div class="swal2-html-container" id="swal2-html-container" style="display: block;">
+                <div class="systemInfoWrapper">
+                    <div> Device Id : <input id="deviceId" type="text" readonly>
+                        <button onclick=" copyData(this)">
+                            <i class="fa fa-clone"></i>
+                        </button>
+                    </div>
+                    <div> Hostname : <input id="hostname" type="text" readonly>
+                        <button onclick=" copyData(this)">
+                            <i class="fa fa-clone"></i>
+                        </button>
+                    </div>
+                    <div> Mac Id : <input id="macId" type="text" readonly>
+                        <button onclick=" copyData(this)">
+                            <i class="fa fa-clone"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <p>Please click Exit button to exit application</p>
+            <div class="button_center">
+                <button class='btn-upload' id="exitApp">Exit</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('exitApp')
+            .addEventListener('click', function () {
+                window.restrict.closeApplication();
+            });
+
+        function copyData(element) {
+            let copyText = element.parentElement
+            let input = copyText.querySelector("input");
+            let icon = copyText.querySelector("i");
+            input.select();
+            document.execCommand("copy");
+            icon.classList.add("fa-check");
+            icon.classList.remove("fa-clone");
+            window.getSelection().removeAllRanges();
+            setTimeout(function () {
+                icon.classList.add("fa-clone");
+                icon.classList.remove("fa-check");
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

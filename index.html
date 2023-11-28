@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+
+  <title>ds-viewer-uploader</title>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/select2.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <script src="./scripts/jquery.3.2.1.min.js"></script>
+  <script src="./scripts/select2.min.js"></script>
+  <script src="./scripts/sweetalert.js"></script>
+
+</head>
+
+<body>
+
+  <div class="form-container" id="loginDetails">
+
+    <div class="form-group">
+      <label for="username" class="required">Username : </label>
+      <input type="text" id="username" />
+    </div>
+
+    <div class="form-group">
+      <label for="password" class="required">Password : </label>
+      <input type="password" id="password" />
+    </div>
+
+    <div class="loderWrapper">
+      <button id="login" class="btn-upload">Login</button>
+      <img id="loadingLogo" src="./assets/image/loading.gif"></img>
+    </div>
+
+  </div>
+
+  <div class="form-container" id="mainDetails">
+
+    <div class="form-group">
+      <label for="uploadFolder" class="required">Select folder :</label>
+      <img id="folderSelectLoader" class="fieldLoader" src="./assets/image/loading.gif"></img>
+      <input type="file" id="uploadFolder" hidden webkitdirectory directory multiple />
+      <button id="chooseFile">Choose Folder</button><span
+        id="filePath">No folder Selected</span>
+    </div>
+
+    <div class="form-group">
+      <label for="patientName" class="required">Patient Name : </label>
+      <input type="text" id="patientName" />
+    </div>
+
+    <div class="form-group">
+      <label for="patientId" class="required">Patient ID : </label>
+      <img id="fieldLoaderId" class="fieldLoader" src="./assets/image/loading.gif"></img>
+      <input type="text"id="patientId" />
+    </div>
+
+    <div class="form-group">
+      <label for="treatmentPlanVersion" class="required">Treatment Plan Version : </label>
+      <input type="text" readonly id="treatmentPlanVersion" placeholder="Auto filled from Patient ID" />
+    </div>
+
+    <div class="form-group">
+      <label for="doctorName" class="required">Doctor Name : </label>
+      <select id="doctorSelect" class=""></select>
+    </div>
+
+    <div class="form-group">
+      <label for="upperStepsNumber" class="required">Upper Steps Number : </label>
+      <input type="number" readonly id="upperStepsNumber" placeholder="Auto filled from selected folder" />
+    </div>
+
+    <div class="form-group">
+      <label for="lowerStepsNumber" class="required">Lower Steps Number : </label>
+      <input type="number" readonly id="lowerStepsNumber" placeholder="Auto filled from selected folder" />
+    </div>
+
+    <div class="form-group">
+      <label for="iprDataReport">IPR data : </label>
+      <img id="iprDataSelectLoader" class="fieldLoader" src="./assets/image/loading.gif"></img>
+      <input type="file" id="iprDataReport" accept=".json"/>
+    </div>
+
+    <div class="form-group">
+      <label for="analysisReportLink">Analysis Report Link : </label>
+      <input type="text" id="analysisReportLink" />
+    </div>
+
+    <div class="form-group">
+      <label for="comments">Comments : </label>
+      <input type="text" id="comments" />
+    </div>
+
+    <div class="form-group" class="required">
+      <label for="notes">Notes : </label>
+      <input type="text" id="notes" />
+    </div>
+
+    <div class="form-group">
+      <label for="uploadAnalysisReport">Analysis Report :</label>
+      <img id="analysisFileSelectLoader" class="fieldLoader" src="./assets/image/loading.gif"></img>
+      <input type="file" id="uploadAnalysisReport" accept=".pdf"/>
+    </div>
+
+    <!-- <div class="form-group">
+      <label for="iprDataReport">IPR Data :</label>
+      <img id="iprDataSelectLoader" class="fieldLoader" src="./assets/image/loading.gif"></img>
+      <input type="file" id="iprDataReport" accept=".json"/>
+    </div> -->
+
+    <div class="loderWrapper">
+      <button id="upload" class="btn-upload">Upload</button>
+    </div>
+
+  </div>
+
+  <div class="form-container" id="progressDetails">
+    <div id="loadingLogoUploadWrapper">
+      <div>
+        Uploading Files to AWS
+      </div>
+      <img id="loadingLogoUpload" src="./assets/image/loading.gif" />
+    </div>
+    <div class="progress" id="progressMain">
+      <div id="progress-done" data-done="70"></div>
+    </div>
+
+    <div id="viewerLink"></div>
+    <div id="generatedLink" class="loderWrapper">
+      <button id="copyLink" class="btn-upload">Copy Link</button>
+      <button id="uploadAgain" class="btn-upload">Upload Again</button>
+    </div>
+  </div>
+
+  <script src="./scripts/renderer.js"></script>
+</body>
+
+</html>
