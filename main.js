@@ -5,6 +5,10 @@ const config = require('./config/config');
 const { exec } = require('child_process');
 
 const log = require('electron-log');
+
+const { autoUpdater } = require('electron-updater');
+
+
 log.transports.file.level = 'info';
 log.transports.console.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}';
 
@@ -57,6 +61,10 @@ const template = [
       },
     ],
   },
+  {
+    label: app.getVersion(),
+    submenu:[]
+  }
 ];
 
 Menu.setApplicationMenu(Menu.buildFromTemplate(template));
@@ -148,4 +156,53 @@ ipcMain.on("send-alert", (event, message) => {
     dialog.showMessageBox(options)
   }
 
+})
+
+
+ipcMain.on('check-for-update', (event) => {
+  logger('info', `main app update-available :`)
+  logger('info', `autoUpdater.checkForUpdates() `)
+  autoUpdater.checkForUpdates(); // Initiates update check
+});
+
+autoUpdater.on('update-available', (e) => {
+  logger('info', `update-available=== : ${e.version}`)
+  mainWindow.webContents.send('update-available', e);
+});
+
+autoUpdater.on('update-not-available', (e) => {
+  logger('info', `update-not-available=== : `)
+  mainWindow.webContents.send('update-not-available', e);
+});
+
+
+ipcMain.on('show-update-dialog', (e, version) => {
+  dialog.showMessageBox(mainWindow, {
+    type: 'question',
+    buttons: ['Update', 'Quit'],
+    defaultId: 0,
+    cancelId: 1,
+    title: 'Update available',
+    message: `A new version(${version}) of the app is available. Would you like to update now?`
+  }).then(result => {
+    if (result.response === 0) {
+      autoUpdater.downloadUpdate();
+      mainWindow.webContents.send('download-progress');
+      autoUpdater.on('update-downloaded', () => {
+        setTimeout(() => {
+          setImmediate(() => {
+            autoUpdater.quitAndInstall();
+          });
+        }, 15000);
+      });
+    } else {
+      logger('info', `quit `)
+      app.quit();
+    }
+  });
+});
+
+autoUpdater.on('error', (message) => {
+  console.error('There was a problem updating the application')
+  logger('error', `message: ${message}`)
 })

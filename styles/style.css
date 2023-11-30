@@ -270,3 +270,19 @@ input::placeholder {
 #viewerLink {
     text-align: center;
 }
+
+#downloadProgressWrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f0f0f0;
+    padding: 10px;
+    box-sizing: border-box;
+    display: none;
+}
+
+.downloading-span{
+    margin: auto 12px auto 0;
+}
+   

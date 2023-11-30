@@ -16,7 +16,7 @@ const { GLTFExporter } = require('../utils/GLTFExporter');
 const { BufferGeometryUtils } = require('../utils/BufferGeometryUtils');
 
 const axios = require('axios');
-const { clipboard, ipcRenderer, contextBridge } = require('electron');
+const { clipboard, ipcRenderer, contextBridge, ipcMain, dialog, app } = require('electron');
 
 const processGltf = gltfPipeline.processGltf;
 const gltfToGlb = gltfPipeline.gltfToGlb;
@@ -49,6 +49,7 @@ const macId = getmac.default();
 let systemAllowed = false
 
 const log = require('electron-log');
+let updateAvailableCheck = (config.NODE_ENV === "development")?false:undefined
 
 function logger(level, msg) {
     if (config.NODE_ENV === "development") {
@@ -151,22 +152,29 @@ window.addEventListener('DOMContentLoaded', () => {
         loginDetails.style.display = "none"
     }
 
-    document.getElementById("login").addEventListener("click", function () {
+    document.getElementById("login").addEventListener("click", async function () {
 
         let loginBtn = document.getElementById('login')
-
-
+        
         let email = document.getElementById('username').value
         let password = document.getElementById('password').value
-
+        
         if (!email || !password) {
             showAlert("Username and Password required")
             logger('warn', `Username and Password required`);
             return
         }
+        ipcRenderer.send('check-for-update');
 
         document.getElementById('loadingLogo').style.display = "block";
         loginBtn.style.display = 'none';
+
+        while (updateAvailableCheck===undefined) {
+            await new Promise(resolve => setTimeout(resolve, 100))           
+        }
+        if(updateAvailableCheck){
+            return
+        } 
 
         signIn({ email: email, password: password }).then((data) => {
             token = data.jwt
@@ -844,6 +852,21 @@ function readJsonFile(file) {
         };
         reader.readAsText(file);
     });
- }
- 
+ } 
 
+ipcRenderer.on('update-available', (event, info) => {
+    logger('info', `update-available called :${info.version}`)
+    updateAvailableCheck= true
+    logger('info',`event :${event.version}`)
+    ipcRenderer.send('show-update-dialog',info.version);
+});
+
+ipcRenderer.on('update-not-available', (event, info) => {
+    logger('info', `update-not-available called :`)
+    updateAvailableCheck= false
+});
+
+ipcRenderer.on('download-progress', () => {
+    let downloadProgressWrapper = document.getElementById('downloadProgressWrapper');
+    downloadProgressWrapper.style.display = 'block';
+});
