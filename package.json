@@ -41,12 +41,11 @@
     "win": {
       "publish": [
         {
-          "private": true,
+          "private": false,
           "provider": "github",
-          "owner": "pruthav-hexa",
-          "repo": "ds-viewer",
-          "releaseType": "release",
-          "token": "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"
+          "owner": "github owner",
+          "repo": "repo name",
+          "releaseType": "release"
         }
       ],
       "icon": "assets/image/app.png"

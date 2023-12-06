@@ -855,18 +855,38 @@ function readJsonFile(file) {
  } 
 
 ipcRenderer.on('update-available', (event, info) => {
-    logger('info', `update-available called :${info.version}`)
+    logger('info', `update(${info.version}) is available for download`)
     updateAvailableCheck= true
-    logger('info',`event :${event.version}`)
     ipcRenderer.send('show-update-dialog',info.version);
 });
 
 ipcRenderer.on('update-not-available', (event, info) => {
-    logger('info', `update-not-available called :`)
+    logger('info', `No update is available for download`)
     updateAvailableCheck= false
 });
 
 ipcRenderer.on('download-progress', () => {
     let downloadProgressWrapper = document.getElementById('downloadProgressWrapper');
+    let loginDiv = document.getElementById('loginDetails');
     downloadProgressWrapper.style.display = 'block';
+    loginDiv.style.display = 'none';
 });
+
+ipcRenderer.on('app-version', (event, appVersion) => {
+    let versionElement = document.getElementById('app-version')
+    logger('info',versionElement)
+    versionElement.innerText += `(v${appVersion})`;
+});
+
+function compareVersions(versionA, versionB) {
+    const partsA = versionA.split('.').map(Number);
+    const partsB = versionB.split('.').map(Number);
+    for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
+       const numA = partsA[i] || 0;
+       const numB = partsB[i] || 0;
+       if (numA < numB) return -1;
+       if (numA > numB) return 1;
+    }
+    return 0; // Versions are equal
+}
+  

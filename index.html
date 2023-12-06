@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
 
-  <title>ds-viewer-uploader</title>
+  <title id="app-version">ds-viewer-uploader</title>
   <link rel="stylesheet" href="./styles/style.css" />
   <link rel="stylesheet" href="./styles/select2.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -34,6 +34,13 @@
       <img id="loadingLogo" src="./assets/image/loading.gif"></img>
     </div>
 
+  </div>
+
+  <div class="form-container" id="downloadProgressWrapper">
+    <div id="loadingLogoUploadWrapper">
+      <span class="downloading-span">Downloading</span>
+      <img id="loadingLogoUpload" src="./assets/image/loading.gif" />
+    </div>
   </div>
 
   <div class="form-container" id="mainDetails">
@@ -134,11 +141,7 @@
     </div>
   </div>
 
-  <div id="downloadProgressWrapper">
-    <div id="loadingLogoUploadWrapper">
-      <span class="downloading-span">Downloading</span>
-      <img id="loadingLogoUpload" src="./assets/image/loading.gif" />
-  </div>
+
    
 
   <script src="./scripts/renderer.js"></script>

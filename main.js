@@ -11,7 +11,7 @@ const { autoUpdater } = require('electron-updater');
 
 log.transports.file.level = 'info';
 log.transports.console.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}';
-
+autoUpdater.autoDownload = false;
 function logger(level, msg){
   if (config.NODE_ENV === "development") {
     console[level](msg)
@@ -61,10 +61,10 @@ const template = [
       },
     ],
   },
-  {
-    label: app.getVersion(),
-    submenu:[]
-  }
+  // {
+  //   label: app.getVersion(),
+  //   submenu:[]
+  // }
 ];
 
 Menu.setApplicationMenu(Menu.buildFromTemplate(template));
@@ -90,7 +90,8 @@ function createWindow() {
   if (config.NODE_ENV === "development") {
     mainWindow.webContents.openDevTools()
   }
-
+  let appVersion = app.getVersion();
+  mainWindow.webContents.send('app-version', appVersion);
 }
 
 
@@ -101,6 +102,7 @@ app.whenReady().then(() => {
   createWindow()
 
   app.on('activate', function () {
+
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -160,18 +162,16 @@ ipcMain.on("send-alert", (event, message) => {
 
 
 ipcMain.on('check-for-update', (event) => {
-  logger('info', `main app update-available :`)
-  logger('info', `autoUpdater.checkForUpdates() `)
+  logger('info', `check if update is available`)
   autoUpdater.checkForUpdates(); // Initiates update check
 });
 
 autoUpdater.on('update-available', (e) => {
-  logger('info', `update-available=== : ${e.version}`)
+  logger('info', `update(${e.version}) is available for download`)
   mainWindow.webContents.send('update-available', e);
 });
 
 autoUpdater.on('update-not-available', (e) => {
-  logger('info', `update-not-available=== : `)
   mainWindow.webContents.send('update-not-available', e);
 });
 
@@ -187,13 +187,15 @@ ipcMain.on('show-update-dialog', (e, version) => {
   }).then(result => {
     if (result.response === 0) {
       autoUpdater.downloadUpdate();
+      logger('info', `update downloading `)
       mainWindow.webContents.send('download-progress');
       autoUpdater.on('update-downloaded', () => {
         setTimeout(() => {
           setImmediate(() => {
+            logger('info', `update downloaded `)
             autoUpdater.quitAndInstall();
           });
-        }, 15000);
+        }, 10000);
       });
     } else {
       logger('info', `quit `)
